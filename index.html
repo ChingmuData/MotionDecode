@@ -268,7 +268,35 @@ footer a { color: #93c5fd; text-decoration: underline; }
                 通过标准化采集、自动化清洗标注、机器人重定向和质量评估流程，为
                 <strong>模仿学习、动作生成、仿真训练与真实机器人部署</strong>提供高质量数据底座。
             </p>
-
+<!-- 数据体系框架文字 -->
+    <div style="margin-top: 2.5rem; padding: 1.8rem 2rem; background: #fff; border: 1px solid #dbeafe; border-radius: 14px;">
+      <h3 style="font-size: 1.15rem; font-weight: 700; color: #1e3a8a; margin-bottom: 1.2rem; text-align: center;">
+        ▎数据体系框架
+      </h3>
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; align-items: flex-start; gap: 0.8rem;">
+          <span style="background: #2563eb; color: white; font-weight: 700; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 4px; white-space: nowrap; margin-top: 0.2rem;">Layer 1</span>
+          <div>
+            <strong style="color: #1e3a8a;">受控环境 · 光学动捕 · 高精度核心</strong>
+            <p style="font-size: 0.9rem; color: #4b5563; margin-top: 0.2rem;">700h+ 光学动捕数据，亚毫米级精度，全身运动 + 手指精细动作 + 物体 6DoF 同步采集。</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 0.8rem;">
+          <span style="background: #3b82f6; color: white; font-weight: 700; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 4px; white-space: nowrap; margin-top: 0.2rem;">Layer 2</span>
+          <div>
+            <strong style="color: #1e3a8a;">跨场景扩展 · 多模态对齐 · 多任务标注</strong>
+            <p style="font-size: 0.9rem; color: #4b5563; margin-top: 0.2rem;">1000h → 2000h 扩展中，覆盖 15+ 真实场景，多视角视频与 mocap 帧时钟对齐，附带结构化任务标签。</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 0.8rem;">
+          <span style="background: #60a5fa; color: white; font-weight: 700; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 4px; white-space: nowrap; margin-top: 0.2rem;">Layer 3</span>
+          <div>
+            <strong style="color: #1e3a8a;">泛化真实环境 · 长尾行为 · 分布外鲁棒性</strong>
+            <p style="font-size: 0.9rem; color: #4b5563; margin-top: 0.2rem;">3000h+ 目标方向，采集非受控环境下的自然人类行为，提升模型在真实物理世界的泛化能力。</p>
+          </div>
+        </div>
+      </div>
+    </div>
             <div class="statboxes">
                 <div class="sbox"><div class="val">700h+</div><div class="desc">光学动捕核心数据</div></div>
                 <div class="sbox"><div class="val">6DoF</div><div class="desc">物体刚体追踪</div></div>
