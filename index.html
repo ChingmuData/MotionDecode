@@ -50,16 +50,14 @@
             justify-content: center; text-align: center; color: white; overflow: hidden;
             padding-top: 70px; /* 为导航栏留出空间 */
         }
-        .hero-bg {
+        /*.hero-bg {
             position: absolute; inset: 0; z-index: -1;
             background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             /* 🟡 REPLACE HERE: 如果你想用视频背景，请注释掉上面的 background，并取消下面 video 的注释 */
-        }
-        /*
+        }*/
         <video class="hero-bg" autoplay muted loop playsinline
-               poster="assets/your-hero-poster.jpg" src="assets/your-hero-video.mp4">
+               poster="assets/your-hero-poster.jpg" src="jibengongjia.mp4">
         </video>
-        */
         .hero-content { position: relative; z-index: 2; max-width: 900px; padding: 2rem; }
         .hero-badge {
             display: inline-block; border: 1px solid rgba(255,255,255,0.4);
@@ -225,14 +223,9 @@
             <p class="lead">总览片：动捕棚全景 → 演员采集 → 手指精细动作 → 物体刚体追踪 → 骨骼实时显示 → 机器人重定向 → 多场景蒙太奇</p>
             <div class="video-container">
                 <!-- 🟡 REPLACE HERE: 替换为您的主介绍视频 -->
-                <div class="video-placeholder">
-                    ▶ Trailer Video (请替换为 assets/trailer.mp4)
-                </div>
-                <!-- 替换为：
                 <video controls autoplay muted loop playsinline
-                       poster="assets/trailer-poster.jpg" src="assets/trailer.mp4">
+                       poster="assets/logo.png" src="assets/jibengongjia.mp4">
                 </video>
-                -->
             </div>
         </div>
     </section>
@@ -291,9 +284,8 @@
             <p class="lead">工业制造 · 家庭服务 · 商超零售 · 医疗康养 · 物流仓储 · 农业食品 · 文娱表演</p>
             <div class="video-container">
                 <!-- 🟡 REPLACE HERE: 替换为场景介绍视频 -->
-                <div class="video-placeholder">
-                    ▶ Scenarios Montage (请替换为 assets/scenarios.mp4)
-                </div>
+                <video controls autoplay muted loop playsinline
+                       poster="assets/logo.png" src="assets/jibengongjia.mp4"></video>
             </div>
         </div>
     </section>
@@ -308,8 +300,8 @@
                 <div class="card">
                     <div class="video-container">
                         <div class="video-placeholder">Finger Motion</div>
-                        <!-- 替换为: <video muted autoplay loop ... src="assets/finger.mp4"></video> -->
-                    </div>
+                       <video controls autoplay muted loop playsinline
+                              poster="assets/logo.png" src="assets/jibengongjia.mp4"></video>
                     <div class="card-body">
                         <div class="card-tag">Finger Motion</div>
                         <h3>手指精细动作</h3>
@@ -321,6 +313,8 @@
                     <div class="video-container">
                         <div class="video-placeholder">Object 6D Pose</div>
                     </div>
+                    <video controls autoplay muted loop playsinline
+                              poster="assets/logo.png" src="assets/jibengongjia.mp4"></video>
                     <div class="card-body">
                         <div class="card-tag">Object 6D Pose</div>
                         <h3>物体位姿与刚体追踪</h3>
@@ -332,6 +326,8 @@
                     <div class="video-container">
                         <div class="video-placeholder">Robot Retargeting</div>
                     </div>
+                    <video controls autoplay muted loop playsinline
+                              poster="assets/logo.png" src="assets/jibengongjia.mp4"></video>
                     <div class="card-body">
                         <div class="card-tag">Robot Retargeting</div>
                         <h3>面向机器人的重定向</h3>
@@ -343,6 +339,8 @@
                     <div class="video-container">
                         <div class="video-placeholder">Multi-view Video</div>
                     </div>
+                    <video controls autoplay muted loop playsinline
+                              poster="assets/logo.png" src="assets/jibengongjia.mp4"></video>
                     <div class="card-body">
                         <div class="card-tag">Multi-view Video</div>
                         <h3>多视角同步视频</h3>
@@ -362,39 +360,48 @@
             <div class="card-grid grid-3">
                 <!-- 生成9个卡片 -->
                 <div class="card">
-                    <div class="video-container"><div class="video-placeholder">对比 01</div></div>
+                    <video autoplay muted loop preload="auto"
+                              src="assets/jibengongjia.mp4" poster="assets/logo.png"></video>
                     <div class="card-body"><p style="font-size:0.9rem; text-align:center;">工业 · 搬运</p></div>
                 </div>
                 <div class="card">
-                    <div class="video-container"><div class="video-placeholder">对比 02</div></div>
+                    <video autoplay muted loop preload="auto"
+                              src="assets/jibengongjia.mp4" poster="assets/logo.png"></video>
                     <div class="card-body"><p style="font-size:0.9rem; text-align:center;">家庭 · 整理</p></div>
                 </div>
                 <div class="card">
-                    <div class="video-container"><div class="video-placeholder">对比 03</div></div>
+                    <video autoplay muted loop preload="auto"
+                              src="assets/jibengongjia.mp4" poster="assets/logo.png"></video>
                     <div class="card-body"><p style="font-size:0.9rem; text-align:center;">医疗 · 辅助</p></div>
                 </div>
                 <div class="card">
-                    <div class="video-container"><div class="video-placeholder">对比 04</div></div>
+                    <video autoplay muted loop preload="auto"
+                              src="assets/jibengongjia.mp4" poster="assets/logo.png"></video>
                     <div class="card-body"><p style="font-size:0.9rem; text-align:center;">零售 · 理货</p></div>
                 </div>
                 <div class="card">
-                    <div class="video-container"><div class="video-placeholder">对比 05</div></div>
+                    <video autoplay muted loop preload="auto"
+                              src="assets/jibengongjia.mp4" poster="assets/logo.png"></video>
                     <div class="card-body"><p style="font-size:0.9rem; text-align:center;">物流 · 分拣</p></div>
                 </div>
                 <div class="card">
-                    <div class="video-container"><div class="video-placeholder">对比 06</div></div>
+                    <video autoplay muted loop preload="auto"
+                              src="assets/jibengongjia.mp4" poster="assets/logo.png"></video>
                     <div class="card-body"><p style="font-size:0.9rem; text-align:center;">农业 · 采摘</p></div>
                 </div>
                 <div class="card">
-                    <div class="video-container"><div class="video-placeholder">对比 07</div></div>
+                    <video autoplay muted loop preload="auto"
+                              src="assets/jibengongjia.mp4" poster="assets/logo.png"></video>
                     <div class="card-body"><p style="font-size:0.9rem; text-align:center;">文娱 · 舞蹈</p></div>
                 </div>
                 <div class="card">
-                    <div class="video-container"><div class="video-placeholder">对比 08</div></div>
+                    <video autoplay muted loop preload="auto"
+                              src="assets/jibengongjia.mp4" poster="assets/logo.png"></video>
                     <div class="card-body"><p style="font-size:0.9rem; text-align:center;">双手 · 工具</p></div>
                 </div>
                 <div class="card">
-                    <div class="video-container"><div class="video-placeholder">对比 09</div></div>
+                    <video autoplay muted loop preload="auto"
+                              src="assets/jibengongjia.mp4" poster="assets/logo.png"></video>
                     <div class="card-body"><p style="font-size:0.9rem; text-align:center;">高动态 · 跑跳</p></div>
                 </div>
             </div>
