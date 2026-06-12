@@ -462,23 +462,59 @@ footer a { color: #93c5fd; text-decoration: underline; }
         </div>
     </section>
     
-<!-- ===== DOWNLOAD / OPEN SOURCE 板块 ===== -->
+<!-- ===== DOWNLOAD 区块（开源数据入口） ===== -->
 <section id="download">
   <div class="container center">
     <div class="section-label">Open Source</div>
     <h2>Get the Dataset</h2>
-    <p class="lead">
-      ChingMu 数据集现已开源，您可以通过 Hugging Face 平台免费下载和使用。
-      数据遵循 CC BY 4.0 协议，欢迎研究者和开发者使用。
+
+    <p class="lead" style="margin-bottom:2rem;">
+      数据集托管于
+      <a href="https://huggingface.co/datasets/ZIHLING/Chingmu-RobotData"
+         target="_blank" rel="noopener noreferrer"
+         style="color:#2563eb;font-weight:600;">
+        Hugging Face 🤗
+      </a>，
+      可通过 <code style="font-size:.92rem; background:#f1f5f9; padding:0.1rem 0.4rem; border-radius:4px;">datasets</code> 库一键加载。
     </p>
-    <div class="download-card">
-      <div class="icon">🤗</div>
-      <h3>Hugging Face 仓库</h3>
-      <p>包含完整的数据集、文档、示例代码和基准测试脚本。</p>
-      <!-- 🟡 替换为您的 Hugging Face 仓库链接 -->
-      <a href="https://huggingface.co/datasets/your-org/chingmu" target="_blank" class="download-link">
-        ⬇ 前往 Hugging Face 下载
+
+    <!-- 主卡片 -->
+    <div class="download-card" style="max-width: 580px; margin: 0 auto;">
+
+      <!-- HF Badge -->
+      <div style="margin-bottom:1rem;">
+        <img src="https://img.shields.io/badge/🤗%20Hugging%20Face-Dataset-blue?logo=huggingface&style=flat-square"
+             alt="Hugging Face Dataset"
+             style="height:22px; border-radius:4px;">
+      </div>
+
+      <h3 style="margin-bottom:.6rem;">ChingMu 1000-Hour</h3>
+
+      <p style="font-size:.95rem;color:#64748b;margin-bottom:1.5rem;max-width:480px;margin-left:auto;margin-right:auto;">
+        在 Hugging Face 查看完整 README、文件结构、License、示例加载脚本与 release notes。
+      </p>
+
+      <!-- 主 CTA -->
+      <a href="https://huggingface.co/datasets/ZIHLING/Chingmu-RobotData"
+         target="_blank" rel="noopener noreferrer"
+         class="download-link"
+         style="display:inline-flex;align-items:center;gap:.5rem; background:#2563eb; color:white; padding:0.85rem 2.2rem; border-radius:8px; font-weight:600; font-size:1.05rem; transition:background 0.2s;">
+        🤗 Open in Hugging Face
       </a>
+
+      <!-- 代码示例引导 -->
+      <p style="margin-top:1.8rem;font-size:.82rem;color:#94a3b8;">
+        Load via <strong style="color:#475569;">datasets</strong>：
+      </p>
+      <pre style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;padding:.9rem 1rem;
+   font-size:.82rem;color:#334155;text-align:left;max-width:440px;margin:0.5rem auto 0;
+   overflow-x:auto;white-space:pre;">
+from datasets import load_dataset
+
+ds = load_dataset("ZIHLING/Chingmu-RobotData")
+print(ds)
+      </pre>
+
     </div>
   </div>
 </section>
