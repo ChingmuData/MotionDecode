@@ -8,7 +8,7 @@
   /* ===== 全局重置 ===== */
   * { margin:0; padding:0; box-sizing:border-box; }
   body { 
-    background: #0b1120;  /* 【修改】深蓝黑背景，配合蓝白主题 */
+    background: #0b1120;  /* 深蓝黑背景，配合蓝白主题 */
     color: #e2e8f0; 
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     overflow: hidden; 
@@ -26,12 +26,12 @@
     padding: 0.8rem 1.5rem;
     background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(8px);
-    border-bottom: 1px solid rgba(96, 165, 250, 0.2); /* 蓝色细边 */
+    border-bottom: 1px solid rgba(96, 165, 250, 0.2);
   }
   .header h1 {
     font-size: 1rem;
     font-weight: 600;
-    color: #93c5fd; /* 浅蓝 */
+    color: #93c5fd;
   }
   .header a {
     color: #cbd5e1;
@@ -67,7 +67,7 @@
     border-top: 1px solid rgba(96, 165, 250, 0.2);
   }
   .controls button {
-    background: #2563eb;      /* 【修改】蓝色按钮 */
+    background: #2563eb;
     color: white;
     border: none;
     padding: 0.5rem 1.2rem;
@@ -93,7 +93,7 @@
   .controls input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 14px; height: 14px;
-    background: #3b82f6;      /* 【修改】蓝色滑块 */
+    background: #3b82f6;
     border-radius: 50%;
     box-shadow: 0 0 10px rgba(59,130,246,0.5);
   }
@@ -138,12 +138,12 @@
   <span class="hint">Drag to orbit · Scroll to zoom</span>
 </div>
 
-<!-- 【修改】引入 Three.js 及相关加载器（使用 ES Modules 方式） -->
+<!-- 引入 Three.js 及 BVHLoader（ES Modules 方式） -->
 <script type="importmap">
 {
   "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"
+    "three": "https://cdn.jsdelivr.net/npm/three@0.164.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.0/examples/jsm/"
   }
 }
 </script>
@@ -152,18 +152,15 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { BVHLoader } from 'three/addons/loaders/BVHLoader.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';  // 【修改】支持 GLTF
 
-// ===== 配置 =====
-// 【修改】你可以在这里修改文件路径，支持 .bvh 或 .glb/.gltf
-const MOTION_FILE = 'assets/dance.bvh';  // 也可改为 'assets/sample.glb'
+// ===== 配置：你的 BVH 文件路径 =====
+const BVH_PATH = 'assets/dance.bvh';   // 请将你的 BVH 文件放在 assets/ 下
 
 // ===== 场景初始化 =====
 const container = document.getElementById('canvas-container');
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(container.clientWidth, container.clientHeight);
-renderer.shadowMap.enabled = false;
 container.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
@@ -188,80 +185,53 @@ scene.add(dirLight);
 const gridHelper = new THREE.GridHelper(500, 40, 0x1e293b, 0x0f172a);
 scene.add(gridHelper);
 
-// ===== 加载动画数据 =====
+// ===== 加载 BVH 数据 =====
 let mixer = null;
 let action = null;
 let isPlaying = false;
 const clock = new THREE.Clock();
 
-// 根据文件扩展名选择加载器
-function loadMotion(filePath) {
-  const ext = filePath.split('.').pop().toLowerCase();
-  
-  if (ext === 'bvh') {
-    const loader = new BVHLoader();
-    loader.load(filePath, onBVHLoaded, undefined, onError);
-  } else if (ext === 'glb' || ext === 'gltf') {
-    const loader = new GLTFLoader();
-    loader.load(filePath, onGLTFLoaded, undefined, onError);
-  } else {
-    console.error('Unsupported format:', ext);
-    alert('不支持的文件格式，请使用 .bvh 或 .glb/.gltf');
-  }
-}
+const loader = new BVHLoader();
+loader.load(
+  BVH_PATH,
+  function (result) {
+    const skeleton = result.skeleton;
+    const clip = result.clip;
 
-// ----- BVH 加载成功回调 -----
-function onBVHLoaded(result) {
-  const skeleton = result.skeleton;
-  const clip = result.clip;
+    // 添加骨骼到场景
+    const boneGroup = new THREE.Group();
+    boneGroup.add(skeleton.bones[0]);
+    scene.add(boneGroup);
 
-  // 添加骨骼到场景
-  const boneGroup = new THREE.Group();
-  boneGroup.add(skeleton.bones[0]);
-  scene.add(boneGroup);
+    // 创建骨骼辅助线（白色线条，无球体）
+    const helper = new THREE.SkeletonHelper(skeleton.bones[0]);
+    helper.material.color.set(0xffffff);
+    helper.material.linewidth = 1;
+    scene.add(helper);
 
-  // 创建骨骼辅助线（白色线条，无球体）
-  const helper = new THREE.SkeletonHelper(skeleton.bones[0]);
-  helper.material.color.set(0xffffff);
-  helper.material.linewidth = 1;
-  scene.add(helper);
+    // 【修改】隐藏 SkeletonHelper 自动生成的根骨骼球体（大圆点）
+    if (helper.bones && helper.bones.length > 0) {
+      helper.bones[0].visible = false;   // 隐藏根骨骼上的大圆点
+    }
 
-  // 【修改】隐藏 SkeletonHelper 自动生成的根骨骼球体
-  if (helper.bones && helper.bones.length > 0) {
-    helper.bones[0].visible = false;  // 隐藏根骨骼上的大圆点
-  }
-
-  // 设置动画混合器
-  mixer = new THREE.AnimationMixer(skeleton.bones[0]);
-  action = mixer.clipAction(clip);
-  action.play();
-  isPlaying = true;
-
-  setupUI(clip.duration);
-}
-
-// ----- GLTF 加载成功回调 -----
-function onGLTFLoaded(gltf) {
-  const model = gltf.scene;
-  scene.add(model);
-
-  // 如果有骨骼动画
-  if (gltf.animations && gltf.animations.length > 0) {
-    mixer = new THREE.AnimationMixer(model);
-    action = mixer.clipAction(gltf.animations[0]);
+    // 设置动画混合器
+    mixer = new THREE.AnimationMixer(skeleton.bones[0]);
+    action = mixer.clipAction(clip);
     action.play();
     isPlaying = true;
-    setupUI(gltf.animations[0].duration);
-  } else {
-    console.warn('GLTF 没有动画数据');
-    setupUI(0);
-  }
-}
 
-function onError(error) {
-  console.error('加载失败:', error);
-  alert('数据加载失败，请检查文件路径和格式');
-}
+    // 绑定 UI
+    setupUI(clip.duration);
+  },
+  function (xhr) {
+    // 加载进度（可选）
+    console.log(`Loading BVH: ${(xhr.loaded / xhr.total * 100).toFixed(0)}%`);
+  },
+  function (error) {
+    console.error('BVH 加载失败:', error);
+    alert('BVH 文件加载失败，请检查路径和文件格式');
+  }
+);
 
 // ===== UI 绑定 =====
 function setupUI(duration) {
@@ -297,7 +267,7 @@ function setupUI(duration) {
     const t = parseFloat(seekBar.value);
     if (action) {
       action.time = t;
-      action.paused = true;      // 拖动时暂停
+      action.paused = true;      // 拖动时暂停动画更新
       mixer.update(0);
     }
     timeDisplay.textContent = `${t.toFixed(2)} / ${duration.toFixed(1)} s`;
@@ -342,9 +312,6 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(w, h);
 });
-
-// ===== 启动加载 =====
-loadMotion(MOTION_FILE);
 </script>
 </body>
 </html>
