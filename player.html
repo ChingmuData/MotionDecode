@@ -130,6 +130,7 @@ loader.load(
     const bonesGroup = new THREE.Group();
     bonesGroup.add(result.skeleton.bones[0]);
     scene.add(bonesGroup);
+    bonesGroup.position.y = -result.skeleton.bones[0].position.y; // 贴地
 
     // SkeletonHelper 画骨骼线（粉/洋红风格）
     const skelHelper = new THREE.SkeletonHelper(result.skeleton.bones[0]);
