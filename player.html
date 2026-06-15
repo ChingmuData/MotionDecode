@@ -88,7 +88,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { BVHLoader } from 'three/addons/loaders/BVHLoader.js';
 
 /* ---------- 配置：你的 BVH 文件路径 ---------- */
-const BVH_PATH = 'assets/sample.bvh';   // ← 把你的示例 bvh 放 assets/ 下改这就行
+const BVH_PATH = 'assets/dance.bvh';   // ← 把你的示例 bvh 放 assets/ 下改这就行
 /* --------------------------------------------- */
 
 const canvas = document.getElementById('c');
@@ -206,7 +206,7 @@ loader.load(
   },
   (err) => {
     console.error('BVH load error:', err);
-    document.getElementById('hint').textContent = '⚠ BVH 加载失败，请检查 assets/sample.bvh 路径';
+    document.getElementById('hint').textContent = '⚠ BVH 加载失败，请检查 assets/dance.bvh 路径';
     document.getElementById('hint').style.color = '#ff4444';
   }
 );
