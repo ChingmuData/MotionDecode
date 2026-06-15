@@ -142,8 +142,8 @@
 <script type="importmap">
 {
   "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.164.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.0/examples/jsm/"
+    "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
   }
 }
 </script>
@@ -156,105 +156,113 @@ import { BVHLoader } from 'three/addons/loaders/BVHLoader.js';
 // ===== 配置：你的 BVH 文件路径 =====
 const BVH_PATH = 'assets/dance.bvh';   // 请将你的 BVH 文件放在 assets/ 下
 
-// ===== 场景初始化 =====
-const container = document.getElementById('canvas-container');
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(container.clientWidth, container.clientHeight);
-container.appendChild(renderer.domElement);
-
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0b1120);  // 深蓝黑背景
-
-const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 2000);
-camera.position.set(0, 140, 380);
-
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(0, 100, 0);
-controls.enableDamping = true;
-controls.update();
-
-// 灯光
-const ambient = new THREE.AmbientLight(0x606080, 1.2);
-scene.add(ambient);
-const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
-dirLight.position.set(80, 200, 120);
-scene.add(dirLight);
-
-// 网格地面（蓝灰色调）
-const gridHelper = new THREE.GridHelper(500, 40, 0x1e293b, 0x0f172a);
-scene.add(gridHelper);
-
-// ===== 加载 BVH 数据 =====
-let mixer = null;
-let action = null;
+// ===== 全局变量 =====
+let container, camera, scene, renderer, controls;
+let mixer, action, clock;
 let isPlaying = false;
-const clock = new THREE.Clock();
+let duration = 0; // 动画总时长
 
-const loader = new BVHLoader();
-loader.load(
-  BVH_PATH,
-  function (result) {
-    console.log('✅ BVH loaded, clip.duration =', result.clip.duration);
-    const skeleton = result.skeleton;
-    const clip = result.clip;
+// ===== 初始化 =====
+init();
+animate();
 
-    // 添加骨骼到场景
-    const boneGroup = new THREE.Group();
-    boneGroup.add(skeleton.bones[0]);
-    scene.add(boneGroup);
+function init() {
+  container = document.getElementById('canvas-container');
+  
+  // 场景
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0b1120); // 深蓝黑
 
-    // 创建骨骼辅助线（白色线条，无球体）
-    const helper = new THREE.SkeletonHelper(skeleton.bones[0]);
-    helper.material.color.set(0xffffff);
-    helper.material.linewidth = 1;
-    scene.add(helper);
+  // 相机
+  camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 2000);
+  camera.position.set(0, 140, 380);
 
-    // 【修改】隐藏 SkeletonHelper 自动生成的根骨骼球体（大圆点）
-    if (helper.bones && helper.bones.length > 0) {
-      helper.bones[0].visible = false;   // 隐藏根骨骼上的大圆点
+  // 渲染器
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
+
+  // 灯光
+  const ambient = new THREE.AmbientLight(0x606080, 1.2);
+  scene.add(ambient);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+  dirLight.position.set(80, 200, 120);
+  scene.add(dirLight);
+
+  // 控制器
+  controls = new OrbitControls(camera, renderer.domElement);
+  controls.target.set(0, 100, 0);
+  controls.enableDamping = true;
+  controls.update();
+
+  // 网格地面（蓝灰色调）
+  const gridHelper = new THREE.GridHelper(500, 40, 0x1e293b, 0x0f172a);
+  scene.add(gridHelper);
+
+  // ===== 加载 BVH =====
+  const loader = new BVHLoader();
+  loader.load(
+    BVH_PATH,
+    function (result) {
+      const skeleton = result.skeleton;
+      const clip = result.clip;
+
+      // 添加骨骼到场景
+      const boneGroup = new THREE.Group();
+      boneGroup.add(skeleton.bones[0]);
+      scene.add(boneGroup);
+
+      // 创建骨骼辅助线（白色线条，无球体）
+      const helper = new THREE.SkeletonHelper(skeleton.bones[0]);
+      helper.material.color.set(0xffffff);
+      helper.material.linewidth = 1;
+      scene.add(helper);
+
+      // 隐藏 SkeletonHelper 自动生成的根骨骼球体（大圆点）
+      if (helper.bones && helper.bones.length > 0) {
+        helper.bones[0].visible = false;
+      }
+
+      // 设置动画混合器
+      mixer = new THREE.AnimationMixer(skeleton.bones[0]);
+      action = mixer.clipAction(clip);
+      
+      // 获取动画时长，并做安全检查
+      if (clip.duration && clip.duration > 0) {
+        duration = clip.duration;
+      } else {
+        duration = 1; // 默认值
+        console.warn('⚠️ 未检测到有效动画时长，已设为默认值 1s');
+      }
+
+      // 更新 UI
+      const seekBar = document.getElementById('seek-bar');
+      const timeDisplay = document.getElementById('time-display');
+      seekBar.max = duration;
+      timeDisplay.textContent = `0.00 / ${duration.toFixed(1)} s`;
+
+      // 自动播放
+      isPlaying = true;
+      document.getElementById('play-btn').textContent = '⏸ Pause';
+      clock = new THREE.Clock();
+      clock.start();
+      action.play();
+    },
+    undefined,
+    function (error) {
+      console.error('❌ BVH 加载失败:', error);
+      alert('BVH 文件加载失败，请检查控制台输出和网络请求。');
     }
+  );
 
-    // 设置动画混合器
-    mixer = new THREE.AnimationMixer(skeleton.bones[0]);
-    action = mixer.clipAction(clip);
-    action.play();
-    isPlaying = true;
-
-    // 绑定 UI
-    setupUI(clip.duration);
-  },
-  function (xhr) {
-    // 加载进度（可选）
-    console.log(`Loading BVH: ${(xhr.loaded / xhr.total * 100).toFixed(0)}%`);
-  },
-  function (error) {
-    console.error('BVH 加载失败:', error);
-    alert('BVH 文件加载失败，请检查路径和文件格式');
-  }
-);
-
-// ===== UI 绑定 =====
-function setupUI(duration) {
+  // ===== UI 事件绑定 =====
   const playBtn = document.getElementById('play-btn');
   const seekBar = document.getElementById('seek-bar');
   const timeDisplay = document.getElementById('time-display');
 
-  // 【修复】确保 duration 是有效数字，否则设为 0 并禁用控件
-  if (typeof duration !== 'number' || isNaN(duration) || duration <= 0) {
-    console.warn('⚠️ 动画时长无效，已禁用进度条。duration =', duration);
-    playBtn.disabled = true;
-    seekBar.disabled = true;
-    seekBar.max = 0;
-    timeDisplay.textContent = 'No valid animation';
-    return; // 提前退出，不再执行后续代码
-  }
-
-  seekBar.max = duration;
-  seekBar.step = 0.001;
-
-  // 播放/暂停
   playBtn.addEventListener('click', () => {
+    if (!action) return;
     isPlaying = !isPlaying;
     playBtn.textContent = isPlaying ? '⏸ Pause' : '▶ Play';
     if (isPlaying) {
@@ -266,60 +274,55 @@ function setupUI(duration) {
     }
   });
 
-  // 进度条拖动
   seekBar.addEventListener('input', () => {
+    if (!action) return;
     const t = parseFloat(seekBar.value);
-    if (action) {
-      action.time = t;
-      action.paused = true;
-      mixer.update(0);
+    action.time = t;
+    action.paused = true;  // 拖动时暂停动画
+    mixer.update(0);
+    if (duration > 0) {
+      timeDisplay.textContent = `${t.toFixed(2)} / ${duration.toFixed(1)} s`;
     }
-    timeDisplay.textContent = `${t.toFixed(2)} / ${duration.toFixed(1)} s`;
   });
+
   seekBar.addEventListener('change', () => {
-    if (isPlaying) {
+    if (isPlaying && action) {
       action.paused = false;
       clock.start();
     }
   });
 
-  // 开始渲染循环
-  animate();
+  // 窗口自适应
+  window.addEventListener('resize', () => {
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  });
 }
-// ===== 渲染循环 =====
+
+// ===== 动画循环 =====
 function animate() {
   requestAnimationFrame(animate);
+  controls.update();
 
   if (mixer && isPlaying) {
     mixer.update(clock.getDelta());
   }
 
-  controls.update();
-
   // 更新进度条和时间显示（非拖动时）
   const seekBar = document.getElementById('seek-bar');
   const timeDisplay = document.getElementById('time-display');
-  if (action) {
+  if (action && document.activeElement !== seekBar) {
     seekBar.value = action.time;
-    // 只有当 duration 是有效数字时才调用 toFixed
-    if (!isNaN(duration) && duration > 0) {
-        timeDisplay.textContent = `${action.time.toFixed(2)} / ${duration.toFixed(1)} s`;
-    } else {
-        timeDisplay.textContent = "加载中...";
+    if (duration > 0) {
+      timeDisplay.textContent = `${action.time.toFixed(2)} / ${duration.toFixed(1)} s`;
     }
   }
 
   renderer.render(scene, camera);
 }
-
-// ===== 窗口尺寸自适应 =====
-window.addEventListener('resize', () => {
-  const w = container.clientWidth;
-  const h = container.clientHeight;
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
-  renderer.setSize(w, h);
-});
 </script>
 </body>
 </html>
