@@ -3,30 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ChingMu Motion Preview</title>
+<title>ChingMu Motion Browser</title>
 <style>
   /* ===== 全局重置 ===== */
   * { margin:0; padding:0; box-sizing:border-box; }
   body { 
-    background: #0b1120;  /* 深蓝黑背景，配合蓝白主题 */
-    color: #e2e8f0; 
+    background: #0b1120;
+    color: #e2e8f0;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    overflow: hidden; 
     height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   /* ===== 顶部标题栏 ===== */
   .header {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 10;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.8rem 1.5rem;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(8px);
+    background: rgba(15, 23, 42, 0.9);
     border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+    flex-shrink: 0;
   }
   .header h1 {
     font-size: 1rem;
@@ -42,29 +41,80 @@
     border-radius: 20px;
     transition: 0.2s;
   }
-  .header a:hover {
-    border-color: #60a5fa;
-    color: #fff;
+  .header a:hover { border-color: #60a5fa; color: #fff; }
+
+  /* ===== 主体布局 ===== */
+  .main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
   }
 
-  /* ===== 3D 画布容器 ===== */
+  /* ===== 左侧数据集列表 ===== */
+  .sidebar {
+    width: 280px;
+    background: rgba(15, 23, 42, 0.6);
+    border-right: 1px solid rgba(96, 165, 250, 0.15);
+    overflow-y: auto;
+    padding: 1rem 0;
+    flex-shrink: 0;
+  }
+  .sidebar-title {
+    padding: 0 1.2rem 0.8rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #64748b;
+  }
+  .motion-item {
+    padding: 0.8rem 1.2rem;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .motion-item:hover {
+    background: rgba(59, 130, 246, 0.1);
+  }
+  .motion-item.active {
+    background: rgba(59, 130, 246, 0.15);
+    border-left-color: #3b82f6;
+  }
+  .motion-item .name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #e2e8f0;
+  }
+  .motion-item .desc {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.2rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ===== 右侧播放器 ===== */
+  .player-area {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
   #canvas-container {
-    width: 100vw;
-    height: 100vh;
+    flex: 1;
+    width: 100%;
   }
 
   /* ===== 底部控制条 ===== */
   .controls {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    z-index: 10;
     display: flex;
     align-items: center;
     gap: 1rem;
     padding: 0.8rem 1.5rem;
     background: rgba(15, 23, 42, 0.9);
-    backdrop-filter: blur(8px);
     border-top: 1px solid rgba(96, 165, 250, 0.2);
+    flex-shrink: 0;
   }
   .controls button {
     background: #2563eb;
@@ -107,7 +157,7 @@
   #time-display {
     font-size: 0.8rem;
     color: #94a3b8;
-    min-width: 110px;
+    min-width: 115px;
     text-align: right;
     font-variant-numeric: tabular-nums;
   }
@@ -117,33 +167,47 @@
     color: #475569;
     margin-left: auto;
   }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 640px) {
+    .sidebar { width: 220px; }
+  }
 </style>
 </head>
 <body>
 
 <!-- 顶部标题栏 -->
 <div class="header">
-  <h1>ChingMu · Motion Preview</h1>
+  <h1>ChingMu · Motion Browser</h1>
   <a href="index.html">← Back to Home</a>
 </div>
 
-<!-- 3D 画布 -->
-<div id="canvas-container"></div>
+<!-- 主体 -->
+<div class="main">
+  <!-- 左侧列表 -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-title">Available Motions</div>
+    <div id="motion-list"></div>
+  </div>
 
-<!-- 底部控制条 -->
-<div class="controls">
-  <button id="play-btn">▶ Play</button>
-  <input type="range" id="seek-bar" min="0" max="1" step="0.001" value="0">
-  <span id="time-display">0.00 / 0.00 s</span>
-  <span class="hint">Drag to orbit · Scroll to zoom</span>
+  <!-- 右侧播放器 -->
+  <div class="player-area">
+    <div id="canvas-container"></div>
+    <div class="controls">
+      <button id="play-btn">▶ Play</button>
+      <input type="range" id="seek-bar" min="0" max="1" step="0.001" value="0">
+      <span id="time-display">0.00 / 0.00 s</span>
+      <span class="hint">Drag to orbit · Scroll to zoom</span>
+    </div>
+  </div>
 </div>
 
-<!-- 引入 Three.js 及 BVHLoader（ES Modules 方式） -->
+<!-- 引入 Three.js 及 BVHLoader -->
 <script type="importmap">
 {
   "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
   }
 }
 </script>
@@ -153,88 +217,119 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { BVHLoader } from 'three/addons/loaders/BVHLoader.js';
 
-// ===== 配置：你的 BVH 文件路径 =====
-const BVH_PATH = 'assets/dance.bvh';   // 请将你的 BVH 文件放在 assets/ 下
+// ===== 数据集定义（在此处添加你的 BVH 条目） =====
+const motionList = [
+  {
+    id: 'walk',
+    name: 'Walking',
+    desc: '自然行走，包含手臂摆动，时长约 5 秒',
+    bvhFile: 'assets/walk.bvh'
+  },
+  {
+    id: 'run',
+    name: 'Running',
+    desc: '慢跑动作，步幅较大，时长约 4 秒',
+    bvhFile: 'assets/run.bvh'
+  },
+  {
+    id: 'jump',
+    name: 'Jumping',
+    desc: '原地跳跃，包含蹲起和落地缓冲',
+    bvhFile: 'assets/jump.bvh'
+  },
+  {
+    id: 'pickup',
+    name: 'Pick Up Object',
+    desc: '弯腰捡起地上物体并起身',
+    bvhFile: 'assets/pickup.bvh'
+  },
+  {
+    id: 'wave',
+    name: 'Hand Waving',
+    desc: '站立挥手打招呼，手臂和手腕动作',
+    bvhFile: 'assets/wave.bvh'
+  }
+];
 
 // ===== 全局变量 =====
 let container, camera, scene, renderer, controls;
 let mixer, action, clock;
 let isPlaying = false;
-let duration = 0; // 动画总时长
+let duration = 0;
+let currentMotionId = null;
+let isLoading = false; // 防止重复加载
 
-// ===== 初始化 =====
-init();
-animate();
-
-function init() {
+// ===== 初始化场景 =====
+function initScene() {
   container = document.getElementById('canvas-container');
-  
-  // 场景
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x0b1120); // 深蓝黑
+  scene.background = new THREE.Color(0x0b1120);
 
-  // 相机
   camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 2000);
   camera.position.set(0, 140, 380);
 
-  // 渲染器
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(container.clientWidth, container.clientHeight);
   container.appendChild(renderer.domElement);
 
-  // 灯光
   const ambient = new THREE.AmbientLight(0x606080, 1.2);
   scene.add(ambient);
   const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
   dirLight.position.set(80, 200, 120);
   scene.add(dirLight);
 
-  // 控制器
   controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 100, 0);
   controls.enableDamping = true;
   controls.update();
 
-  // 网格地面（蓝灰色调）
   const gridHelper = new THREE.GridHelper(500, 40, 0x1e293b, 0x0f172a);
   scene.add(gridHelper);
 
-  // ===== 加载 BVH =====
+  // 窗口自适应
+  window.addEventListener('resize', () => {
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  });
+}
+
+// ===== 加载 BVH =====
+function loadBVH(filePath) {
+  if (isLoading) return;
+  isLoading = true;
+
+  // 清除旧的骨骼和动画
+  clearScene();
+
   const loader = new BVHLoader();
   loader.load(
-    BVH_PATH,
+    filePath,
     function (result) {
       const skeleton = result.skeleton;
       const clip = result.clip;
 
-      // 添加骨骼到场景
       const boneGroup = new THREE.Group();
       boneGroup.add(skeleton.bones[0]);
       scene.add(boneGroup);
 
-      // 创建骨骼辅助线（白色线条，无球体）
       const helper = new THREE.SkeletonHelper(skeleton.bones[0]);
       helper.material.color.set(0xffffff);
       helper.material.linewidth = 1;
       scene.add(helper);
 
-      // 隐藏 SkeletonHelper 自动生成的根骨骼球体（大圆点）
+      // 隐藏根骨骼球体
       if (helper.bones && helper.bones.length > 0) {
         helper.bones[0].visible = false;
       }
 
-      // 设置动画混合器
       mixer = new THREE.AnimationMixer(skeleton.bones[0]);
       action = mixer.clipAction(clip);
-      
-      // 获取动画时长，并做安全检查
-      if (clip.duration && clip.duration > 0) {
-        duration = clip.duration;
-      } else {
-        duration = 1; // 默认值
-        console.warn('⚠️ 未检测到有效动画时长，已设为默认值 1s');
-      }
+
+      duration = (clip.duration && clip.duration > 0) ? clip.duration : 1;
 
       // 更新 UI
       const seekBar = document.getElementById('seek-bar');
@@ -248,15 +343,104 @@ function init() {
       clock = new THREE.Clock();
       clock.start();
       action.play();
+
+      isLoading = false;
     },
     undefined,
     function (error) {
       console.error('❌ BVH 加载失败:', error);
-      alert('BVH 文件加载失败，请检查控制台输出和网络请求。');
+      alert('BVH 文件加载失败：' + filePath);
+      isLoading = false;
     }
   );
+}
 
-  // ===== UI 事件绑定 =====
+// ===== 清除场景中旧骨骼 =====
+function clearScene() {
+  // 移除所有骨骼相关的对象（除了网格和灯光）
+  const objectsToRemove = [];
+  scene.traverse((child) => {
+    if (child.isBone || child.isSkeletonHelper || child.type === 'Group') {
+      // 只移除我们添加的骨骼组和辅助线
+      if (child.userData.isCustom === true) {
+        objectsToRemove.push(child);
+      }
+    }
+  });
+  objectsToRemove.forEach(obj => {
+    obj.parent?.remove(obj);
+    if (obj.geometry) obj.geometry.dispose();
+    if (obj.material) obj.material.dispose();
+  });
+
+  // 停止旧动画
+  if (mixer) {
+    mixer.stopAllAction();
+    mixer = null;
+    action = null;
+  }
+  isPlaying = false;
+  document.getElementById('play-btn').textContent = '▶ Play';
+}
+
+// ===== 渲染循环 =====
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+
+  if (mixer && isPlaying) {
+    mixer.update(clock.getDelta());
+  }
+
+  const seekBar = document.getElementById('seek-bar');
+  const timeDisplay = document.getElementById('time-display');
+  if (action && document.activeElement !== seekBar) {
+    seekBar.value = action.time;
+    if (duration > 0) {
+      timeDisplay.textContent = `${action.time.toFixed(2)} / ${duration.toFixed(1)} s`;
+    }
+  }
+
+  renderer.render(scene, camera);
+}
+
+// ===== 渲染左侧列表 =====
+function renderSidebar() {
+  const listContainer = document.getElementById('motion-list');
+  listContainer.innerHTML = '';
+
+  motionList.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'motion-item';
+    div.dataset.id = item.id;
+    div.innerHTML = `
+      <div class="name">${item.name}</div>
+      <div class="desc">${item.desc}</div>
+    `;
+    div.addEventListener('click', () => {
+      selectMotion(item.id);
+    });
+    listContainer.appendChild(div);
+  });
+}
+
+// ===== 选择某个动作 =====
+function selectMotion(id) {
+  if (id === currentMotionId) return;
+  const item = motionList.find(m => m.id === id);
+  if (!item) return;
+
+  // 更新高亮
+  document.querySelectorAll('.motion-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.id === id);
+  });
+
+  currentMotionId = id;
+  loadBVH(item.bvhFile);
+}
+
+// ===== UI 事件绑定 =====
+function bindControls() {
   const playBtn = document.getElementById('play-btn');
   const seekBar = document.getElementById('seek-bar');
   const timeDisplay = document.getElementById('time-display');
@@ -278,7 +462,7 @@ function init() {
     if (!action) return;
     const t = parseFloat(seekBar.value);
     action.time = t;
-    action.paused = true;  // 拖动时暂停动画
+    action.paused = true;
     mixer.update(0);
     if (duration > 0) {
       timeDisplay.textContent = `${t.toFixed(2)} / ${duration.toFixed(1)} s`;
@@ -291,37 +475,17 @@ function init() {
       clock.start();
     }
   });
-
-  // 窗口自适应
-  window.addEventListener('resize', () => {
-    const w = container.clientWidth;
-    const h = container.clientHeight;
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
-  });
 }
 
-// ===== 动画循环 =====
-function animate() {
-  requestAnimationFrame(animate);
-  controls.update();
+// ===== 启动 =====
+initScene();
+renderSidebar();
+bindControls();
+animate();
 
-  if (mixer && isPlaying) {
-    mixer.update(clock.getDelta());
-  }
-
-  // 更新进度条和时间显示（非拖动时）
-  const seekBar = document.getElementById('seek-bar');
-  const timeDisplay = document.getElementById('time-display');
-  if (action && document.activeElement !== seekBar) {
-    seekBar.value = action.time;
-    if (duration > 0) {
-      timeDisplay.textContent = `${action.time.toFixed(2)} / ${duration.toFixed(1)} s`;
-    }
-  }
-
-  renderer.render(scene, camera);
+// 默认选中第一个
+if (motionList.length > 0) {
+  selectMotion(motionList[0].id);
 }
 </script>
 </body>
