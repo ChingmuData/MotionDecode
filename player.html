@@ -195,6 +195,7 @@ const loader = new BVHLoader();
 loader.load(
   BVH_PATH,
   function (result) {
+    console.log('✅ BVH loaded, clip.duration =', result.clip.duration);
     const skeleton = result.skeleton;
     const clip = result.clip;
 
@@ -239,11 +240,14 @@ function setupUI(duration) {
   const seekBar = document.getElementById('seek-bar');
   const timeDisplay = document.getElementById('time-display');
 
-  if (duration <= 0) {
+  // 【修复】确保 duration 是有效数字，否则设为 0 并禁用控件
+  if (typeof duration !== 'number' || isNaN(duration) || duration <= 0) {
+    console.warn('⚠️ 动画时长无效，已禁用进度条。duration =', duration);
     playBtn.disabled = true;
     seekBar.disabled = true;
-    timeDisplay.textContent = 'No animation';
-    return;
+    seekBar.max = 0;
+    timeDisplay.textContent = 'No valid animation';
+    return; // 提前退出，不再执行后续代码
   }
 
   seekBar.max = duration;
@@ -267,7 +271,7 @@ function setupUI(duration) {
     const t = parseFloat(seekBar.value);
     if (action) {
       action.time = t;
-      action.paused = true;      // 拖动时暂停动画更新
+      action.paused = true;
       mixer.update(0);
     }
     timeDisplay.textContent = `${t.toFixed(2)} / ${duration.toFixed(1)} s`;
@@ -282,7 +286,6 @@ function setupUI(duration) {
   // 开始渲染循环
   animate();
 }
-
 // ===== 渲染循环 =====
 function animate() {
   requestAnimationFrame(animate);
@@ -296,9 +299,14 @@ function animate() {
   // 更新进度条和时间显示（非拖动时）
   const seekBar = document.getElementById('seek-bar');
   const timeDisplay = document.getElementById('time-display');
-  if (action && document.activeElement !== seekBar) {
+  if (action) {
     seekBar.value = action.time;
-    timeDisplay.textContent = `${action.time.toFixed(2)} / ${seekBar.max.toFixed(1)} s`;
+    // 只有当 duration 是有效数字时才调用 toFixed
+    if (!isNaN(duration) && duration > 0) {
+        timeDisplay.textContent = `${action.time.toFixed(2)} / ${duration.toFixed(1)} s`;
+    } else {
+        timeDisplay.textContent = "加载中...";
+    }
   }
 
   renderer.render(scene, camera);
