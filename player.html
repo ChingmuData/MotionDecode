@@ -110,11 +110,12 @@
   .controls {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.8rem;
     padding: 0.8rem 1.5rem;
     background: rgba(15, 23, 42, 0.9);
     border-top: 1px solid rgba(96, 165, 250, 0.2);
     flex-shrink: 0;
+    flex-wrap: wrap;
   }
   .controls button {
     background: #2563eb;
@@ -132,6 +133,7 @@
 
   .controls input[type="range"] {
     flex: 1;
+    min-width: 100px;
     height: 5px;
     -webkit-appearance: none;
     appearance: none;
@@ -157,7 +159,7 @@
   #time-display {
     font-size: 0.8rem;
     color: #94a3b8;
-    min-width: 115px;
+    min-width: 105px;
     text-align: right;
     font-variant-numeric: tabular-nums;
   }
@@ -168,7 +170,18 @@
     margin-left: auto;
   }
 
-  /* ===== 响应式 ===== */
+  /* 切换按钮的选中状态 */
+  .mode-btn-active {
+    background: #059669 !important; /* 绿色表示旋转模式 */
+  }
+  .mode-btn-inactive {
+    background: #475569 !important; /* 灰色表示平移模式 */
+  }
+
+  @media (max-width: 900px) {
+    .controls { gap: 0.5rem; }
+    .hint { display: none; }
+  }
   @media (max-width: 640px) {
     .sidebar { width: 190px; }
   }
@@ -195,9 +208,11 @@
     <div id="canvas-container"></div>
     <div class="controls">
       <button id="play-btn">⏸ Pause</button>
+      <!-- 【新增】旋转/平移切换按钮 -->
+      <button id="mode-toggle" class="mode-btn-inactive">🔁 旋转</button>
       <input type="range" id="seek-bar" min="0" max="1" step="0.001" value="0">
       <span id="time-display">0.00 / 0.00 s</span>
-      <span class="hint">左键平移 · Shift+左键旋转 · 滚轮缩放</span>
+      <span class="hint" id="mode-hint">左键平移 · 滚轮缩放</span>
     </div>
   </div>
 </div>
@@ -206,8 +221,8 @@
 <script type="importmap">
 {
   "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.179.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.179.0/examples/jsm/"
+    "three": "https://cdn.jsdelivr.net/npm/three@0.181.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.181.0/examples/jsm/"
   }
 }
 </script>
@@ -261,6 +276,9 @@ let duration = 0;
 let currentMotionId = null;
 let isLoading = false;
 
+// 模式状态：true=旋转模式，false=平移模式
+let isRotateMode = false;
+
 // ===== 初始化场景 =====
 function initScene() {
   container = document.getElementById('canvas-container');
@@ -290,33 +308,17 @@ function initScene() {
   controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 100, 0);
   controls.enableDamping = true;
-  // 默认左键为平移，右键和中键不用（但我们还会动态切换）
+  // 初始为平移模式
   controls.mouseButtons = {
     LEFT: THREE.MOUSE.PAN,
     MIDDLE: THREE.MOUSE.DOLLY,
-    RIGHT: null // 禁用右键功能，避免冲突
+    RIGHT: null
   };
   controls.touches = {
     ONE: THREE.TOUCH.PAN,
     TWO: THREE.TOUCH.DOLLY_PAN
   };
   controls.update();
-
-  // ===== 键盘监听：Shift 切换左键功能 =====
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Shift') {
-      // 按住 Shift 时，左键改为旋转
-      controls.mouseButtons.LEFT = THREE.MOUSE.ROTATE;
-      controls.update();
-    }
-  });
-  document.addEventListener('keyup', (e) => {
-    if (e.key === 'Shift') {
-      // 松开 Shift 时，左键恢复为平移
-      controls.mouseButtons.LEFT = THREE.MOUSE.PAN;
-      controls.update();
-    }
-  });
 
   const gridHelper = new THREE.GridHelper(500, 40, 0x1e293b, 0x0f172a);
   scene.add(gridHelper);
@@ -328,6 +330,28 @@ function initScene() {
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
   });
+}
+
+// ===== 切换左键模式 =====
+function toggleMode() {
+  isRotateMode = !isRotateMode;
+  const modeToggle = document.getElementById('mode-toggle');
+  const hint = document.getElementById('mode-hint');
+
+  if (isRotateMode) {
+    // 切换到旋转模式
+    controls.mouseButtons.LEFT = THREE.MOUSE.ROTATE;
+    modeToggle.textContent = '🔄 平移';
+    modeToggle.className = 'mode-btn-active';
+    hint.textContent = '左键旋转 · 滚轮缩放';
+  } else {
+    // 切换到平移模式
+    controls.mouseButtons.LEFT = THREE.MOUSE.PAN;
+    modeToggle.textContent = '🔁 旋转';
+    modeToggle.className = 'mode-btn-inactive';
+    hint.textContent = '左键平移 · 滚轮缩放';
+  }
+  controls.update();
 }
 
 // ===== 清除旧骨骼（只清除带标记的对象） =====
@@ -474,7 +498,9 @@ function bindControls() {
   const playBtn = document.getElementById('play-btn');
   const seekBar = document.getElementById('seek-bar');
   const timeDisplay = document.getElementById('time-display');
+  const modeToggle = document.getElementById('mode-toggle');
 
+  // 播放/暂停
   playBtn.addEventListener('click', () => {
     if (!action) return;
     isPlaying = !isPlaying;
@@ -488,6 +514,7 @@ function bindControls() {
     }
   });
 
+  // 进度条
   seekBar.addEventListener('input', () => {
     if (!action) return;
     const t = parseFloat(seekBar.value);
@@ -505,6 +532,9 @@ function bindControls() {
       clock.start();
     }
   });
+
+  // 模式切换按钮
+  modeToggle.addEventListener('click', toggleMode);
 }
 
 // ===== 启动 =====
