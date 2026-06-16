@@ -197,7 +197,7 @@
       <button id="play-btn">⏸ Pause</button>
       <input type="range" id="seek-bar" min="0" max="1" step="0.001" value="0">
       <span id="time-display">0.00 / 0.00 s</span>
-      <span class="hint">左键平移 · 右键旋转 · 滚轮缩放</span>
+      <span class="hint">左键平移 · Shift+左键旋转 · 滚轮缩放</span>
     </div>
   </div>
 </div>
@@ -206,8 +206,8 @@
 <script type="importmap">
 {
   "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.178.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.178.0/examples/jsm/"
+    "three": "https://cdn.jsdelivr.net/npm/three@0.179.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.179.0/examples/jsm/"
   }
 }
 </script>
@@ -275,19 +275,10 @@ function initScene() {
   renderer.setSize(container.clientWidth, container.clientHeight);
   container.appendChild(renderer.domElement);
 
-  // 【修复2】禁用右键菜单，避免与浏览器默认菜单冲突
+  // 禁用右键菜单（双重保险）
   renderer.domElement.addEventListener('contextmenu', (e) => e.preventDefault());
-  // 同时禁用触摸长按菜单（移动端）
-  renderer.domElement.addEventListener('touchstart', (e) => {
-    if (e.touches.length === 1) {
-      // 不阻止默认行为，但阻止长按菜单
-    }
-  });
-  // 更彻底的禁用：在全局阻止 contextmenu
   document.addEventListener('contextmenu', (e) => {
-    if (e.target.closest('#canvas-container')) {
-      e.preventDefault();
-    }
+    if (e.target.closest('#canvas-container')) e.preventDefault();
   });
 
   const ambient = new THREE.AmbientLight(0x606080, 1.2);
@@ -299,13 +290,33 @@ function initScene() {
   controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 100, 0);
   controls.enableDamping = true;
-  // 左键平移，右键旋转
+  // 默认左键为平移，右键和中键不用（但我们还会动态切换）
   controls.mouseButtons = {
     LEFT: THREE.MOUSE.PAN,
     MIDDLE: THREE.MOUSE.DOLLY,
-    RIGHT: THREE.MOUSE.ROTATE
+    RIGHT: null // 禁用右键功能，避免冲突
+  };
+  controls.touches = {
+    ONE: THREE.TOUCH.PAN,
+    TWO: THREE.TOUCH.DOLLY_PAN
   };
   controls.update();
+
+  // ===== 键盘监听：Shift 切换左键功能 =====
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Shift') {
+      // 按住 Shift 时，左键改为旋转
+      controls.mouseButtons.LEFT = THREE.MOUSE.ROTATE;
+      controls.update();
+    }
+  });
+  document.addEventListener('keyup', (e) => {
+    if (e.key === 'Shift') {
+      // 松开 Shift 时，左键恢复为平移
+      controls.mouseButtons.LEFT = THREE.MOUSE.PAN;
+      controls.update();
+    }
+  });
 
   const gridHelper = new THREE.GridHelper(500, 40, 0x1e293b, 0x0f172a);
   scene.add(gridHelper);
@@ -385,7 +396,7 @@ function loadBVH(filePath) {
       seekBar.value = 0;
       timeDisplay.textContent = `0.00 / ${duration.toFixed(1)} s`;
 
-      // 【修复1】确保自动播放
+      // 自动播放
       isPlaying = true;
       document.getElementById('play-btn').textContent = '⏸ Pause';
       clock = new THREE.Clock();
