@@ -52,7 +52,7 @@
 
   /* ===== 左侧数据集列表 ===== */
   .sidebar {
-    width: 280px;
+    width: 260px;
     background: rgba(15, 23, 42, 0.6);
     border-right: 1px solid rgba(96, 165, 250, 0.15);
     overflow-y: auto;
@@ -170,7 +170,7 @@
 
   /* ===== 响应式 ===== */
   @media (max-width: 640px) {
-    .sidebar { width: 220px; }
+    .sidebar { width: 190px; }
   }
 </style>
 </head>
@@ -206,8 +206,8 @@
 <script type="importmap">
 {
   "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    "three": "https://cdn.jsdelivr.net/npm/three@0.174.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.174.0/examples/jsm/"
   }
 }
 </script>
@@ -287,10 +287,8 @@ function initScene() {
   controls.update();
 
   const gridHelper = new THREE.GridHelper(500, 40, 0x1e293b, 0x0f172a);
-  gridHelper.name = 'floor'; // 标记地面，防止被清除
   scene.add(gridHelper);
 
-  // 窗口自适应
   window.addEventListener('resize', () => {
     const w = container.clientWidth;
     const h = container.clientHeight;
@@ -300,9 +298,9 @@ function initScene() {
   });
 }
 
-// ===== 清除场景中旧骨骼和相关对象 =====
+// ===== 清除旧骨骼（只清除带标记的对象） =====
 function clearOldMotion() {
-  // 停止并清理动画混合器
+  // 停止动画
   if (mixer) {
     mixer.stopAllAction();
     mixer = null;
@@ -314,14 +312,11 @@ function clearOldMotion() {
     clock = null;
   }
 
-  // 遍历场景，移除所有不是地面网格的对象
+  // 遍历场景，移除所有 userData.isMotion 为 true 的对象
   const toRemove = [];
   scene.traverse((child) => {
-    if (child.isMesh || child.isLineSegments || child.isBone || child.isSkeleton) {
-      // 排除地面网格（name 为 floor）
-      if (child.name !== 'floor') {
-        toRemove.push(child);
-      }
+    if (child.userData && child.userData.isMotion) {
+      toRemove.push(child);
     }
   });
   toRemove.forEach(obj => {
@@ -330,14 +325,14 @@ function clearOldMotion() {
     if (obj.material) obj.material.dispose();
   });
 }
-  
+
 // ===== 加载 BVH =====
 function loadBVH(filePath) {
   if (isLoading) return;
   isLoading = true;
 
-  // 清除旧的骨骼和动画
-  clearScene();
+  // 清除旧内容
+  clearOldMotion();
 
   const loader = new BVHLoader();
   loader.load(
@@ -346,11 +341,15 @@ function loadBVH(filePath) {
       const skeleton = result.skeleton;
       const clip = result.clip;
 
+      // 创建骨骼组并添加标记
       const boneGroup = new THREE.Group();
+      boneGroup.userData.isMotion = true; // 标记
       boneGroup.add(skeleton.bones[0]);
       scene.add(boneGroup);
 
+      // 创建骨骼辅助线并添加标记
       const helper = new THREE.SkeletonHelper(skeleton.bones[0]);
+      helper.userData.isMotion = true; // 标记
       helper.material.color.set(0xffffff);
       helper.material.linewidth = 1;
       scene.add(helper);
@@ -360,6 +359,7 @@ function loadBVH(filePath) {
         helper.bones[0].visible = false;
       }
 
+      // 设置动画混合器
       mixer = new THREE.AnimationMixer(skeleton.bones[0]);
       action = mixer.clipAction(clip);
 
