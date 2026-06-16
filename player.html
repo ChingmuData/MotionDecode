@@ -178,13 +178,16 @@
     background: #475569 !important; /* 灰色表示平移模式 */
   }
 
-  @media (max-width: 900px) {
+   @media (max-width: 950px) {
     .controls { gap: 0.5rem; }
     .hint { display: none; }
   }
+  @media (max-width: 750px) {
+    .controls { flex-wrap: wrap; }
+    #mode-toggle { order: 10; } /* 在小屏幕上强制移到最右边 */
+  }
   @media (max-width: 640px) {
     .sidebar { width: 190px; }
-  }
 </style>
 </head>
 <body>
