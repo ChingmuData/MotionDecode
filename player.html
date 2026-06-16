@@ -197,7 +197,7 @@
       <button id="play-btn">▶ Play</button>
       <input type="range" id="seek-bar" min="0" max="1" step="0.001" value="0">
       <span id="time-display">0.00 / 0.00 s</span>
-      <span class="hint">Drag to orbit · Scroll to zoom</span>
+      <span class="hint">左键平移 · 右键旋转 · 滚轮缩放</span>
     </div>
   </div>
 </div>
@@ -206,8 +206,8 @@
 <script type="importmap">
 {
   "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.174.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.174.0/examples/jsm/"
+    "three": "https://cdn.jsdelivr.net/npm/three@0.177.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.177.0/examples/jsm/"
   }
 }
 </script>
@@ -284,6 +284,12 @@ function initScene() {
   controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 100, 0);
   controls.enableDamping = true;
+  // 【修改】左键平移，右键旋转
+  controls.mouseButtons = {
+    LEFT: THREE.MOUSE.PAN,
+    MIDDLE: THREE.MOUSE.DOLLY,
+    RIGHT: THREE.MOUSE.ROTATE
+  };
   controls.update();
 
   const gridHelper = new THREE.GridHelper(500, 40, 0x1e293b, 0x0f172a);
@@ -300,7 +306,6 @@ function initScene() {
 
 // ===== 清除旧骨骼（只清除带标记的对象） =====
 function clearOldMotion() {
-  // 停止动画
   if (mixer) {
     mixer.stopAllAction();
     mixer = null;
@@ -312,7 +317,6 @@ function clearOldMotion() {
     clock = null;
   }
 
-  // 遍历场景，移除所有 userData.isMotion 为 true 的对象
   const toRemove = [];
   scene.traverse((child) => {
     if (child.userData && child.userData.isMotion) {
@@ -331,7 +335,6 @@ function loadBVH(filePath) {
   if (isLoading) return;
   isLoading = true;
 
-  // 清除旧内容
   clearOldMotion();
 
   const loader = new BVHLoader();
@@ -341,37 +344,31 @@ function loadBVH(filePath) {
       const skeleton = result.skeleton;
       const clip = result.clip;
 
-      // 创建骨骼组并添加标记
       const boneGroup = new THREE.Group();
-      boneGroup.userData.isMotion = true; // 标记
+      boneGroup.userData.isMotion = true;
       boneGroup.add(skeleton.bones[0]);
       scene.add(boneGroup);
 
-      // 创建骨骼辅助线并添加标记
       const helper = new THREE.SkeletonHelper(skeleton.bones[0]);
-      helper.userData.isMotion = true; // 标记
+      helper.userData.isMotion = true;
       helper.material.color.set(0xffffff);
       helper.material.linewidth = 1;
       scene.add(helper);
 
-      // 隐藏根骨骼球体
       if (helper.bones && helper.bones.length > 0) {
         helper.bones[0].visible = false;
       }
 
-      // 设置动画混合器
       mixer = new THREE.AnimationMixer(skeleton.bones[0]);
       action = mixer.clipAction(clip);
 
       duration = (clip.duration && clip.duration > 0) ? clip.duration : 1;
 
-      // 更新 UI
       const seekBar = document.getElementById('seek-bar');
       const timeDisplay = document.getElementById('time-display');
       seekBar.max = duration;
       timeDisplay.textContent = `0.00 / ${duration.toFixed(1)} s`;
 
-      // 自动播放
       isPlaying = true;
       document.getElementById('play-btn').textContent = '⏸ Pause';
       clock = new THREE.Clock();
@@ -436,7 +433,6 @@ function selectMotion(id) {
   const item = motionList.find(m => m.id === id);
   if (!item) return;
 
-  // 更新高亮
   document.querySelectorAll('.motion-item').forEach(el => {
     el.classList.toggle('active', el.dataset.id === id);
   });
