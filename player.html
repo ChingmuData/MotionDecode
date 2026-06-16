@@ -253,11 +253,13 @@ const motionList = [
 
 // ===== 全局变量 =====
 let container, camera, scene, renderer, controls;
-let mixer, action, clock;
+let mixer = null;
+let action = null;
+let clock = null;
 let isPlaying = false;
 let duration = 0;
 let currentMotionId = null;
-let isLoading = false; // 防止重复加载
+let isLoading = false;
 
 // ===== 初始化场景 =====
 function initScene() {
@@ -285,6 +287,7 @@ function initScene() {
   controls.update();
 
   const gridHelper = new THREE.GridHelper(500, 40, 0x1e293b, 0x0f172a);
+  gridHelper.name = 'floor'; // 标记地面，防止被清除
   scene.add(gridHelper);
 
   // 窗口自适应
@@ -297,6 +300,37 @@ function initScene() {
   });
 }
 
+// ===== 清除场景中旧骨骼和相关对象 =====
+function clearOldMotion() {
+  // 停止并清理动画混合器
+  if (mixer) {
+    mixer.stopAllAction();
+    mixer = null;
+    action = null;
+  }
+  isPlaying = false;
+  if (clock) {
+    clock.stop();
+    clock = null;
+  }
+
+  // 遍历场景，移除所有不是地面网格的对象
+  const toRemove = [];
+  scene.traverse((child) => {
+    if (child.isMesh || child.isLineSegments || child.isBone || child.isSkeleton) {
+      // 排除地面网格（name 为 floor）
+      if (child.name !== 'floor') {
+        toRemove.push(child);
+      }
+    }
+  });
+  toRemove.forEach(obj => {
+    if (obj.parent) obj.parent.remove(obj);
+    if (obj.geometry) obj.geometry.dispose();
+    if (obj.material) obj.material.dispose();
+  });
+}
+  
 // ===== 加载 BVH =====
 function loadBVH(filePath) {
   if (isLoading) return;
@@ -353,34 +387,6 @@ function loadBVH(filePath) {
       isLoading = false;
     }
   );
-}
-
-// ===== 清除场景中旧骨骼 =====
-function clearScene() {
-  // 移除所有骨骼相关的对象（除了网格和灯光）
-  const objectsToRemove = [];
-  scene.traverse((child) => {
-    if (child.isBone || child.isSkeletonHelper || child.type === 'Group') {
-      // 只移除我们添加的骨骼组和辅助线
-      if (child.userData.isCustom === true) {
-        objectsToRemove.push(child);
-      }
-    }
-  });
-  objectsToRemove.forEach(obj => {
-    obj.parent?.remove(obj);
-    if (obj.geometry) obj.geometry.dispose();
-    if (obj.material) obj.material.dispose();
-  });
-
-  // 停止旧动画
-  if (mixer) {
-    mixer.stopAllAction();
-    mixer = null;
-    action = null;
-  }
-  isPlaying = false;
-  document.getElementById('play-btn').textContent = '▶ Play';
 }
 
 // ===== 渲染循环 =====
