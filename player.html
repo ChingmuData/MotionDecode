@@ -178,7 +178,7 @@
     background: #475569 !important; /* 灰色表示平移模式 */
   }
 
-   @media (max-width: 950px) {
+  @media (max-width: 950px) {
     .controls { gap: 0.5rem; }
     .hint { display: none; }
   }
@@ -188,6 +188,7 @@
   }
   @media (max-width: 640px) {
     .sidebar { width: 190px; }
+  }
 </style>
 </head>
 <body>
@@ -211,10 +212,10 @@
     <div id="canvas-container"></div>
     <div class="controls">
       <button id="play-btn">⏸ Pause</button>
-      <!-- 【新增】旋转/平移切换按钮 -->
-      <button id="mode-toggle" class="mode-btn-inactive">🔁 旋转</button>
       <input type="range" id="seek-bar" min="0" max="1" step="0.001" value="0">
       <span id="time-display">0.00 / 0.00 s</span>
+      <!-- 【修改】切换按钮移到了时间显示后面，提示文字前面 -->
+      <button id="mode-toggle" class="mode-btn-inactive">🔁 旋转</button>
       <span class="hint" id="mode-hint">左键平移 · 滚轮缩放</span>
     </div>
   </div>
@@ -224,8 +225,8 @@
 <script type="importmap">
 {
   "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.181.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.181.0/examples/jsm/"
+    "three": "https://cdn.jsdelivr.net/npm/three@0.183.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.0/examples/jsm/"
   }
 }
 </script>
