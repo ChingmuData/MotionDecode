@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ChingMu 1000-Hour Embodied Motion Dataset</title>
-<meta name="description" content="面向人形机器人、灵巧手、具身AI的高精度多模态动作数据开源基础设施。">
+<meta name="description" content="An open-source infrastructure for high-precision multimodal motion data of humanoid robots, dexterous hands, and embodied AI">
 <style>
 /* ===== Reset & Base ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -227,7 +227,7 @@ footer a { color: #93c5fd; text-decoration: underline; }
         <div class="hero-content">
             <div class="hero-badge">Embodied AI · Motion Capture · Humanoid Ready</div>
             <h1>ChingMu 1000-Hour<br>Embodied Motion Dataset</h1>
-            <p class="hero-sub">面向人形机器人、具身 AI 和虚拟制作的高精度多模态动作数据。</p>
+            <p class="hero-sub">High-precision multimodal motion data for humanoid robots, embodied AI, and virtual production.</p>
             <div class="hero-stats">
                 <div class="hero-stat"><div class="num">1000+ hrs</div><div class="label">Motion Capture</div></div>
                 <div class="hero-stat"><div class="num">15+</div><div class="label">Real-world Scenarios</div></div>
@@ -247,7 +247,7 @@ footer a { color: #93c5fd; text-decoration: underline; }
         <div class="container center">
             <div class="section-label">Overview</div>
             <h2>Dataset Trailer</h2>
-            <p class="lead">动捕棚全景 → 演员采集 → 全身运动捕捉 → 物体刚体追踪 → 骨骼实时显示 → 机器人重定向 → 多场景蒙太奇</p>
+            <p class="lead">Motion capture studio panorama → Actor capture → Full-body motion capture → Rigid body tracking of objects → Real-time display of bones → Robot redirection → Multi-scene montage</p>
             <div class="video-container">
                 <!-- 🟡 REPLACE HERE: 替换为您的主介绍视频 -->
                 <video controls autoplay muted loop playsinline
@@ -263,68 +263,65 @@ footer a { color: #93c5fd; text-decoration: underline; }
             <div class="section-label">Abstract</div>
             <h2>About the Dataset</h2>
             <p class="lead">
-                <strong>ChingMu 1000-Hour Embodied Motion Dataset</strong> 是一个面向人形机器人、灵巧手、具身 AI 和虚拟制作构建的
-                <strong>高精度、多模态、可复现动作数据基础设施</strong>。<br><br>
-                数据通过光学动作捕捉系统采集，覆盖人体全身运动、物体 6D 位姿、多视角视频、任务标签和质量检测报告；
-                场景覆盖工业制造、家庭服务、商超零售、医疗康养、物流仓储、球类交互与文娱表演等典型应用。<br><br>
-                通过标准化采集、自动化清洗标注、机器人重定向和质量评估流程，为
-                <strong>模仿学习、动作生成、仿真训练与真实机器人部署</strong>提供高质量数据底座。
+                <strong>ChingMu 1000-Hour Embodied Motion Dataset</strong> It is a <strong>high-precision, multi-modal, and reproducible</strong> action data infrastructure specifically designed for humanoid robots, dexterous hands, embodied AI, and virtual production.<br><br>
+                The data is collected through an optical motion capture system, covering full-body human movements, 6D poses of objects, multi-angle videos, task labels and quality inspection reports; the scenarios cover typical applications such as industrial manufacturing, household services, supermarket retail, medical care and rehabilitation, logistics and warehousing, ball interaction and entertainment performances, etc.<br><br>
+                By implementing standardized data collection, automated cleaning of annotations, robot redirection, and quality assessment processes, a high-quality data foundation is provided for <strong>imitation learning, action generation, simulation training, and real robot deployment.</strong>
             </p>
 <!-- 数据体 系框架文字 -->
     <div style="margin-top: 2.5rem; padding: 1.8rem 2rem; background: #fff; border: 1px solid #dbeafe; border-radius: 14px;">
       <h3 style="font-size: 1.15rem; font-weight: 700; color: #1e3a8a; margin-bottom: 1.2rem; text-align: center;">
-        ▎数据体系框架
+        ▎Data system framework
       </h3>
       <div style="display: flex; flex-direction: column; gap: 1rem;">
         <div style="display: flex; align-items: flex-start; gap: 0.8rem;">
           <span style="background: #2563eb; color: white; font-weight: 700; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 4px; white-space: nowrap; margin-top: 0.2rem;">Layer 1</span>
           <div>
-            <strong style="color: #1e3a8a;">受控环境 · 光学动捕 · 高精度核心</strong>
-            <p style="font-size: 0.9rem; color: #4b5563; margin-top: 0.2rem;">1000h+ 光学动捕数据，亚毫米级精度，全身运动 + 手指精细动作 + 物体 6DoF 同步采集。</p>
+            <strong style="color: #1e3a8a;">Controlled environment · Optical motion capture · High-precision core</strong>
+            <p style="font-size: 0.9rem; color: #4b5563; margin-top: 0.2rem;">1000 hours of optical motion capture data, with sub-millimeter accuracy, capturing full body movements + fine finger actions + 6DoF synchronization of objects.</p>
           </div>
         </div>
         <div style="display: flex; align-items: flex-start; gap: 0.8rem;">
           <span style="background: #3b82f6; color: white; font-weight: 700; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 4px; white-space: nowrap; margin-top: 0.2rem;">Layer 2</span>
           <div>
-            <strong style="color: #1e3a8a;">跨场景扩展 · 多模态对齐 · 多任务标注</strong>
-            <p style="font-size: 0.9rem; color: #4b5563; margin-top: 0.2rem;">1000h → 2000h 扩展中，覆盖 15+ 真实场景，多视角视频与 mocap 帧时钟对齐，附带结构化任务标签。</p>
+            <strong style="color: #1e3a8a;">Cross-scenario expansion · Multimodal alignment · Multi-task annotation</strong>
+            <p style="font-size: 0.9rem; color: #4b5563; margin-top: 0.2rem;">During the 1000h → 2000h expansion, it covers over 15 real scenarios, aligns multi-angle videos with mocap frame clocks, and comes with structured task labels.</p>
           </div>
         </div>
         <div style="display: flex; align-items: flex-start; gap: 0.8rem;">
           <span style="background: #60a5fa; color: white; font-weight: 700; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 4px; white-space: nowrap; margin-top: 0.2rem;">Layer 3</span>
           <div>
-            <strong style="color: #1e3a8a;">泛化真实环境 · 长尾行为 · 分布外鲁棒性</strong>
-            <p style="font-size: 0.9rem; color: #4b5563; margin-top: 0.2rem;">3000h+ 目标方向，采集非受控环境下的自然人类行为，提升模型在真实物理世界的泛化能力。</p>
+            <strong style="color: #1e3a8a;">Generalization of real-world environments · Long-tail behavior · Out-of-distribution robustness</strong>
+            <p style="font-size: 0.9rem; color: #4b5563; margin-top: 0.2rem;">3000h+ target direction, collecting natural human behaviors in uncontrolled environments, enhancing the model's generalization ability in the real physical world.</p>
           </div>
         </div>
       </div>
     </div>
             <div class="statboxes">
-                <div class="sbox"><div class="val">1000h+</div><div class="desc">光学动捕核心数据</div></div>
-                <div class="sbox"><div class="val">6DoF</div><div class="desc">物体刚体追踪</div></div>
-                <div class="sbox"><div class="val">Multi-view</div><div class="desc">同步多视角视频</div></div>
-                <div class="sbox"><div class="val">Robot-ready</div><div class="desc">人形/灵巧手重定向</div></div>
+                <div class="sbox"><div class="val">1000h+</div><div class="desc">Core data of optical motion capture</div></div>
+                <div class="sbox"><div class="val">6DoF</div><div class="desc">Rigid Body Tracking of Objects</div></div>
+                <div class="sbox"><div class="val">Multi-view</div><div class="desc">Synchronized multi-view video</div></div>
+                <div class="sbox"><div class="val">Robot-ready</div><div class="desc">Humanoid/Liquid Hand Retarget</div></div>
             </div>
 
             <!-- 数据规模里程碑 -->
             <div class="milestone">
-                <h3 style="text-align: center; margin-bottom: 1rem;">数据规模扩展计划</h3>
+                <h3 style="text-align: center; margin-bottom: 1rem;">Data scale expansion plan</h3>
                 <div class="mileline"><div class="milefill"></div></div>
                 <div class="milepoints">
                     <div class="milepoint">
                         <div class="miledot done">✓</div>
                         <div class="milelabel">1000h</div>
-                        <div class="milesub">已完成</div>
+                        <div class="milesub">Completed</div>
                     </div>
                     <div class="milepoint">
                         <div class="miledot current">→</div>
                         <div class="milelabel">2000h+</div>
-                        <div class="milesub">2026 Q3 扩展中</div>
+                        <div class="milesub">2026 Q3 Under expansion</div>
                     </div>
                     <div class="milepoint">
                         <div class="miledot future">★</div>
                         <div class="milelabel">3000h+</div>
-                        <div class="milesub">2027 目标</div>
+                        <div class="milesub">2027 target</div>
                     </div>
                 </div>
             </div>
@@ -344,10 +341,10 @@ footer a { color: #93c5fd; text-decoration: underline; }
                               poster="assets/logo.png" src="assets/sigongge/sigongge_1.mp4"></video>
                         </div>
                     <div class="card-body">
-                      <div class="card-tag" style="font-size:0.65rem; color:#6366f1;">全身运动捕捉 · 毫米级关节轨迹</div>
-                        <h3>全身运动数据</h3>
-                        <p>走、跑、跳、弯腰、转身、搬运等全身运动，适配人形机器人全身控制训练。</p>
-                      <p style="font-size:0.78rem; color:#94a3b8; margin-top:0.3rem;">数据规模：200+ 小时 · 100+ 动作类型</p>
+                      <div class="card-tag" style="font-size:0.65rem; color:#6366f1;">Full-body motion capture · Millimeter-level joint trajectories</div>
+                        <h3>Full-body movement data</h3>
+                        <p>Walking, running, jumping, bending over, turning around, carrying objects, etc. - these are all full-body movements suitable for the training of the overall control of humanoid robots.</p>
+                      <p style="font-size:0.78rem; color:#94a3b8; margin-top:0.3rem;">Data size: 200+ hours · 100+ types of actions</p>
                     </div>
                 </div>
                 <!-- Card 2 -->
@@ -357,10 +354,10 @@ footer a { color: #93c5fd; text-decoration: underline; }
                               poster="assets/logo.png" src="assets/sigongge/sigongge_2.mp4"></video>
                         </div>
                     <div class="card-body">
-                        <div class="card-tag" style="font-size:0.65rem; color:#6366f1;">刚体追踪真值 · 每帧 6DoF pose + bounding</div>
-                        <h3>物体位姿与刚体追踪</h3>
-                        <p>人手、道具、商品在同一坐标系同步采集，输出每帧 6DoF pose。</p>
-                      <p style="font-size:0.78rem; color:#94a3b8; margin-top:0.3rem;">数据规模：150+ 小时 · 100+ 刚体对象</p>
+                        <div class="card-tag" style="font-size:0.65rem; color:#6366f1;">True value of rigid body tracking · 6DoF pose + bounding per frame</div>
+                        <h3>Object Pose and Rigid Body Tracking</h3>
+                        <p>The human hands, props and goods are simultaneously collected in the same coordinate system, and the 6DoF pose of each frame is output.</p>
+                      <p style="font-size:0.78rem; color:#94a3b8; margin-top:0.3rem;">Data size: 150+ hours · 100+ rigid bodies</p>
                     </div>
                 </div>
                 <!-- Card 3 -->
@@ -370,10 +367,10 @@ footer a { color: #93c5fd; text-decoration: underline; }
                               poster="assets/logo.png" src="assets/sigongge/3.mp4"></video>
                         </div>
                     <div class="card-body">
-                        <div class="card-tag" style="font-size:0.65rem; color:#6366f1;">Cross-Embodiment · Human→Robot 重定向 + QA</div>
-                        <h3>面向机器人的重定向</h3>
-                        <p>Human→Robot skeleton retargeting + 仿真校验 + 质量报告。</p>
-                      <p style="font-size:0.78rem; color:#94a3b8; margin-top:0.3rem;">数据规模：300+ 小时 · 多种机器人型号</p>
+                        <div class="card-tag" style="font-size:0.65rem; color:#6366f1;">Cross-Embodiment · Human→Robot Retarget + QA</div>
+                        <h3>Robot-oriented redirection</h3>
+                        <p>Human→Robot skeleton retargeting + Simulation verification + Quality report</p>
+                      <p style="font-size:0.78rem; color:#94a3b8; margin-top:0.3rem;">Data volume: Over 300 hours · Various robot models</p>
                     </div>
                 </div>
                 <!-- Card 4 -->
@@ -383,10 +380,10 @@ footer a { color: #93c5fd; text-decoration: underline; }
                               poster="assets/logo.png" src="assets/sigongge/4.mp4"></video>
                         </div>
                     <div class="card-body">
-                        <div class="card-tag" style="font-size:0.65rem; color:#6366f1;">时空对齐 · mocap 时钟同步的多机位影像</div>
-                        <h3>多视角同步视频</h3>
-                        <p>与 mocap 帧时钟对齐的多机位影像，用于视觉模型输入与校验。</p>
-                        <p style="font-size:0.78rem; color:#94a3b8; margin-top:0.3rem;">数据规模：400+ 小时 · 8 机位同步</p>
+                        <div class="card-tag" style="font-size:0.65rem; color:#6366f1;">Time-space alignment · Multi-camera video synchronization with mocap clock synchronization</div>
+                        <h3>Multi-angle synchronized video</h3>
+                        <p>Multi-camera images aligned with the mocap frame clock, used for input and verification of the visual model.</p>
+                        <p style="font-size:0.78rem; color:#94a3b8; margin-top:0.3rem;">Data size: 400+ hours · 8 camera positions synchronized</p>
                     </div>
                 </div>
             </div>
@@ -398,53 +395,53 @@ footer a { color: #93c5fd; text-decoration: underline; }
         <div class="container center">
             <div class="section-label">Showcase</div>
             <h2>Comparison & Demonstration</h2>
-            <p class="lead">多种数据重定向效果，直观展示数据多样性与迁移能力。</p>
+            <p class="lead">Multiple data redirection effects, visually presenting the diversity of data and its migration capability.</p>
             <div class="card-grid grid-3">
                 <!-- 生成9个卡片 -->
                 <div class="card">
                     <video autoplay muted loop preload="auto"
                               src="assets/video/001_wudao_2.mp4" poster="assets/logo.png"></video>
-                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">舞蹈</p></div>
+                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">Dance</p></div>
                 </div>
                 <div class="card">
                     <video autoplay muted loop preload="auto"
                               src="assets/video/003_shanglouti.mp4" poster="assets/logo.png"></video>
-                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">上楼梯</p></div>
+                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">Upstairs</p></div>
                 </div>
                 <div class="card">
                     <video autoplay muted loop preload="auto"
                               src="assets/video/004_quanji.mp4" poster="assets/logo.png"></video>
-                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">拳击</p></div>
+                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">Punch</p></div>
                 </div>
                 <div class="card">
                     <video autoplay muted loop preload="auto"
                               src="assets/video/005_paoku_daoju1.mp4" poster="assets/logo.png"></video>
-                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">跑酷</p></div>
+                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">Parkour</p></div>
                 </div>
                 <div class="card">
                     <video autoplay muted loop preload="auto"
                               src="assets/video/006_banyun_Solo_front.mp4" poster="assets/logo.png"></video>
-                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">搬运</p></div>
+                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">Lifting and moving</p></div>
                 </div>
                 <div class="card">
                     <video autoplay muted loop preload="auto"
                               src="assets/video/007_lanqiu_01.mp4" poster="assets/logo.png"></video>
-                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">篮球</p></div>
+                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">Basketball</p></div>
                 </div>
                 <div class="card">
                     <video autoplay muted loop preload="auto"
                               src="assets/video/008_pingpangqiu_V01.mp4" poster="assets/logo.png"></video>
-                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">乒乓球</p></div>
+                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">Table tennis</p></div>
                 </div>
                 <div class="card">
                     <video autoplay muted loop preload="auto"
                               src="assets/video/009_duikang_V01.mp4" poster="assets/logo.png"></video>
-                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">双人对抗</p></div>
+                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">Two-person confrontation</p></div>
                 </div>
                 <div class="card">
                     <video autoplay muted loop preload="auto"
                               src="assets/video/010_houtui.mp4" poster="assets/logo.png"></video>
-                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">后退行走</p></div>
+                    <div class="card-body"><p style="font-size:0.9rem; text-align:center;">Walking backward</p></div>
                 </div>
             </div>
         </div>
@@ -457,13 +454,13 @@ footer a { color: #93c5fd; text-decoration: underline; }
     <h2>Get the Dataset</h2>
 
     <p class="lead" style="margin-bottom:2rem;">
-      数据集托管于
+      The dataset is hosted on
       <a href="https://huggingface.co/datasets/ZIHLING/Chingmu-RobotData"
          target="_blank" rel="noopener noreferrer"
          style="color:#2563eb;font-weight:600;">
         Hugging Face 🤗
       </a>，
-      可通过 <code style="font-size:.92rem; background:#f1f5f9; padding:0.1rem 0.4rem; border-radius:4px;">datasets</code> 库一键加载。
+      It can be loaded directly from <code style="font-size:.92rem; background:#f1f5f9; padding:0.1rem 0.4rem; border-radius:4px;">datasets</code> the library.
     </p>
 
     <!-- 主卡片 -->
@@ -479,7 +476,7 @@ footer a { color: #93c5fd; text-decoration: underline; }
       <h3 style="margin-bottom:.6rem;">ChingMu 1000-Hour</h3>
 
       <p style="font-size:.95rem;color:#64748b;margin-bottom:1.5rem;max-width:480px;margin-left:auto;margin-right:auto;">
-        在 Hugging Face 查看完整 README、文件结构、License、示例加载脚本与 release notes。
+        View the complete README, file structure, License, sample loading script and release notes on Hugging Face.
       </p>
 
       <!-- 主 CTA -->
@@ -511,10 +508,10 @@ footer a { color: #93c5fd; text-decoration: underline; }
     ">Roadmap</div>
     
     <h2 style="font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem;">
-      更多模态，持续扩展
+      More modalities, continuously expanding
     </h2>
     <p style="font-size: 1rem; color: #64748b; margin-bottom: 3rem;">
-      在 1000h 光学动捕基础上，我们正在把数据维度进一步拓宽
+      Based on the 1000h optical motion capture technology, we are currently expanding the data dimension further.
     </p>
 
     <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
@@ -531,11 +528,11 @@ footer a { color: #93c5fd; text-decoration: underline; }
       " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 24px rgba(99,102,241,0.08)'; this.style.borderColor='#c7d2fe'" onmouseout="this.style.transform=''; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.04)'; this.style.borderColor='#e2e8f0'">
         <div style="font-size: 2.5rem; margin-bottom: 1rem;">✋</div>
         <h4 style="font-size: 1.125rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">
-          灵巧手 · 手指精细动作专项
+          Dexterous Hands · Specialized Training for Fine Finger Movements
         </h4>
         <p style="font-size: 0.875rem; color: #475569; line-height: 1.6; margin-bottom: 1.5rem;">
-          在 Layer 1 全身+手指基础上，进一步扩展捏、拧、按键、工具操作等毫米级指关节轨迹，
-          面向灵巧手 IL / RL 训练格式输出。
+          Based on the Layer 1 full-body + finger model, further expand the manipulation, twisting, button-pressing, tool operation and other millimeter-level finger joint trajectories,
+          and output them in the form suitable for dexterous hand IL/RL training.
         </p>
         <span style="
           display: inline-block;
@@ -545,7 +542,7 @@ footer a { color: #93c5fd; text-decoration: underline; }
           border-radius: 20px;
           background: #ede9fe;
           color: #4f46e5;
-        ">2000h 扩展中 · Q3 2026</span>
+        ">2000h Under expansion · Q3 2026</span>
       </div>
 
       <!-- 音频（全新模态） -->
@@ -560,11 +557,11 @@ footer a { color: #93c5fd; text-decoration: underline; }
       " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 24px rgba(99,102,241,0.08)'; this.style.borderColor='#c7d2fe'" onmouseout="this.style.transform=''; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.04)'; this.style.borderColor='#e2e8f0'">
         <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎤</div>
         <h4 style="font-size: 1.125rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">
-          音频数据
+          Audio data
         </h4>
         <p style="font-size: 0.875rem; color: #475569; line-height: 1.6; margin-bottom: 1.5rem;">
-          多语种语音指令、人机交互对话、环境声场同步采集，
-          与 mocap / 视频时空对齐，支持语音-动作联合建模。
+          Multilingual voice commands, human-computer interaction dialogues, and synchronous acquisition of environmental sound fields.
+          Aligns with mocap / video time sequence and supports joint modeling of speech and actions.
         </p>
         <span style="
           display: inline-block;
@@ -586,7 +583,7 @@ footer a { color: #93c5fd; text-decoration: underline; }
         <div class="container center">
             <div class="section-label">Data Pipeline</div>
             <h2>Data Capture & Release System</h2>
-            <p class="lead">从场景设计到数据集发布，每一步可审计、可复现。</p>
+            <p class="lead">From the scene design to the release of the dataset, every step is auditable and reproducible.</p>
             <div class="pipeline">
                 <div class="pstep">Scenario<br>Design</div><div class="parrow">→</div>
                 <div class="pstep">Optical<br>Motion Capture</div><div class="parrow">→</div>
@@ -606,14 +603,14 @@ footer a { color: #93c5fd; text-decoration: underline; }
             <div class="section-label">Contact</div>
             <h2>Partnership & Custom Capture</h2>
             <p class="lead">
-                定制采集 · 数采中心方案 · 长期数据订阅 · 机器人格式适配（MuJoCo / Isaac / URDF）<br>
+                Customized collection · Data collection center solution · Long-term data subscription · Robot format adaptation（MuJoCo / Isaac / URDF）<br>
                 📧 <a href="mailto:19101712793@163.com" style="color:var(--primary-blue);">MotionDecode@chingmu.com</a>
             </p>
             <div style="margin-top: 2.5rem;">
-                <p style="font-weight: 600; color: var(--dark-blue); margin-bottom: 1rem;">📱 微信联系并备注所属单位</p>
+                <p style="font-weight: 600; color: var(--dark-blue); margin-bottom: 1rem;">📱 Contact via WeChat and include the name of your organization in the note.</p>
                 <!-- 🟡 REPLACE HERE: 替换为您的微信二维码图片 -->
                 <!--<div style="width: 200px; height: 200px; background: #f1f5f9; border-radius: 12px; border: 2px dashed #cbd5e1; margin: 0 auto; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
-                    微信二维码<br>(assets/cs.jpg) -->
+                    WeChat QR code<br>(assets/cs.jpg) -->
                 </div>
                 <img src="assets/invite_code.jpg" alt="WeChat QR Code" style="width:200px; border-radius:12px; border:1px solid #e2e8f0; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
                 -->
